@@ -128,7 +128,7 @@ int main (void)
         xprintf(PSTR("rc=%d\n"), (WORD)f_mount(0, &Fatfs[0]));
         xprintf(PSTR("Opening file hej\n"));
         xprintf(PSTR("rc=%d\n"), (WORD)f_open(&file1, "hej",FA_WRITE)); 
-    display_sensor_values();
+    //display_sensor_values();
 
     while(1) {
         while ((UCSR0A & (1 << RXC0)) == 0) {};
