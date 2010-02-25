@@ -2,6 +2,7 @@
 #include "config.h"
 #include "can_lib.h"
 #include "uart_lib.h"
+#include <util/delay.h>
 
 //_____ D E F I N I T I O N S __________________________________________________
 #define ID_BASE 0x80
@@ -41,13 +42,11 @@ int main (void)
 
     while (1)
     {
-        // Venter på datakald
-        dataType = wait_CAN_request();
-
-        uart_mini_printf("DataType: %d \n\r", dataType);
+        // sender hvert sekund
+        _delay_ms(500);
 
         // Sætter udgående sensordata
-        set_sensor_data(dataType);
+        set_sensor_data(0);
 
         // Transmittere sensordata
         CAN_transmit(); 

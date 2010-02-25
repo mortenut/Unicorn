@@ -145,46 +145,34 @@ void can(void)
 
     while (1)
     {
-        _delay_ms(100);  // x ms between refreshed screen
-        for(j=0; j<NB_TARGET; j++)
-        {
-            //CANGIE |=(1<<ENIT);
-            // --- Init Rx Commands
-      	    for(i=0; i<9; i++) response_buffer[i]=0; // Nulstiller buffer
-            response_msg.id.std = ID_TAG_BASE + j;
-            response_msg.ctrl.ide = 0;
-            response_msg.ctrl.rtr = 0;
-            response_msg.dlc = 8;
-            response_msg.cmd = CMD_RX_DATA_MASKED;
-            // --- Rx Command
-            while(can_cmd(&response_msg) != CAN_CMD_ACCEPTED);
-
-	    req_sensor_data(k,3);
-	    k += 1;
-	    if(k == 3)
-		k = 0;
-            _delay_ms(10); // Wait x ms for a response if exits
-
-            if (can_get_status(&response_msg) == CAN_STATUS_COMPLETED){
-                // --- Node ID
-	xprintf(PSTR("Node: %d"),response_msg.id.std-127);
-                
-                // --- Data               
-               	xprintf(PSTR(", Data1: %03d"), response_buffer[0]);
-
-		xprintf(PSTR(", Data2: %03d"), response_buffer[1]);
-		xprintf(PSTR(", Data3: %03d"), response_buffer[2]);
-		xprintf(PSTR(", Data4: %03d"), response_buffer[3]);
-		xprintf(PSTR(", Data5: %03d"), response_buffer[4]);
-		xprintf(PSTR(", Data6: %03d"), response_buffer[5]);
-		xprintf(PSTR(", Data7: %03d"), response_buffer[6]);                
-		xprintf(PSTR(", Data8: %03d"), response_buffer[7]);
-		xprintf(PSTR("\r\n"));  
-            }else{
-                response_msg.cmd = CMD_ABORT;
-          	    while (can_cmd(&response_msg) != CAN_CMD_ACCEPTED);
-            }
+        // --- Init Rx Commands
+      	for(i=0; i<9; i++) {
+                response_buffer[i]=0; // Nulstiller buffer
         }
+        response_msg.id.std = ID_TAG_BASE;
+        response_msg.ctrl.ide = 0;
+        response_msg.ctrl.rtr = 0;
+        response_msg.dlc = 8;
+        response_msg.cmd = CMD_RX_DATA_MASKED;
+        // --- Rx Command
+        while(can_cmd(&response_msg) != CAN_CMD_ACCEPTED);
+
+        // Venter på der kommer data fra node
+        while (can_get_status(&response_msg) != CAN_STATUS_COMPLETED);
+            // --- Node ID
+	        xprintf(PSTR("Node: %d"),response_msg.id.std-127);
+            
+            // --- Data               
+            xprintf(PSTR(", Data1: %03d"), response_buffer[0]);
+
+		    xprintf(PSTR(", Data2: %03d"), response_buffer[1]);
+		    xprintf(PSTR(", Data3: %03d"), response_buffer[2]);
+		    xprintf(PSTR(", Data4: %03d"), response_buffer[3]);
+		    xprintf(PSTR(", Data5: %03d"), response_buffer[4]);
+		    xprintf(PSTR(", Data6: %03d"), response_buffer[5]);
+		    xprintf(PSTR(", Data7: %03d"), response_buffer[6]);                
+		    xprintf(PSTR(", Data8: %03d"), response_buffer[7]);
+		    xprintf(PSTR("\r\n"));  
     }
 }
 
