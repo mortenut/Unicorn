@@ -135,7 +135,7 @@ void can(void)
     U8 response_buffer[3][9];
     st_cmd_t response_msg[3];
 
-    char num_buffer = 4;
+    char num_buffer = 3;
 
     // --- Init variables
     for (i=0; i<num_buffer; i++) {
@@ -153,7 +153,7 @@ void can(void)
         }
 
         for (i=0; i<num_buffer; i++) {
-            if (can_get_status(&response_msg[i]) == CAN_STATUS_COMPLETED || response_msg[i].id.std != ID_TAG_BASE) {
+            if (can_get_status(&response_msg[i]) == CAN_STATUS_ERROR || response_msg[i].id.std != ID_TAG_BASE) {
             response_msg[i].id.std = ID_TAG_BASE;
             response_msg[i].ctrl.ide = 0;
             response_msg[i].ctrl.rtr = 0;
@@ -161,17 +161,18 @@ void can(void)
             response_msg[i].cmd = CMD_RX_DATA_MASKED;
             // --- Rx Command
             while(can_cmd(&response_msg[i]) != CAN_CMD_ACCEPTED);
-            }
+          }
         }
 
         // Venter på der kommer data fra node
         while (can_get_status(&response_msg[0]) != CAN_STATUS_COMPLETED);
+        while (can_get_status(&response_msg[1]) != CAN_STATUS_COMPLETED);
             // --- Node ID
 	        xprintf(PSTR("Node: %d"),response_msg[0].id.std-127);
             
             // --- Data               
+            xprintf(PSTR(", Buf 0"));
             xprintf(PSTR(", Data1: %03d"), response_buffer[0][0]);
-
 		    xprintf(PSTR(", Data2: %03d"), response_buffer[0][1]);
 		    xprintf(PSTR(", Data3: %03d"), response_buffer[0][2]);
 		    xprintf(PSTR(", Data4: %03d"), response_buffer[0][3]);
@@ -179,7 +180,20 @@ void can(void)
 		    xprintf(PSTR(", Data6: %03d"), response_buffer[0][5]);
 		    xprintf(PSTR(", Data7: %03d"), response_buffer[0][6]);                
 		    xprintf(PSTR(", Data8: %03d"), response_buffer[0][7]);
-		    xprintf(PSTR("\r\n"));  
+		    xprintf(PSTR("\r\n"));
+            
+	        xprintf(PSTR("Node: %d"),response_msg[0].id.std-127);
+            xprintf(PSTR(", Buf 1"));
+            xprintf(PSTR(", Data1: %03d"), response_buffer[1][0]);
+		    xprintf(PSTR(", Data2: %03d"), response_buffer[1][1]);
+		    xprintf(PSTR(", Data3: %03d"), response_buffer[1][2]);
+		    xprintf(PSTR(", Data4: %03d"), response_buffer[1][3]);
+		    xprintf(PSTR(", Data5: %03d"), response_buffer[1][4]);
+		    xprintf(PSTR(", Data6: %03d"), response_buffer[1][5]);
+		    xprintf(PSTR(", Data7: %03d"), response_buffer[1][6]);                
+		    xprintf(PSTR(", Data8: %03d"), response_buffer[1][7]);
+		    xprintf(PSTR("\r\n"));
+
     }
 }
 
