@@ -86,7 +86,7 @@ unsigned short int wait_CAN_request(void)
     // Venter på data er modtaget
     while(can_get_status(&response_msg) == CAN_STATUS_NOT_COMPLETED);
 
-return response_buffer[0];}
+return response_buffer[0];}
 
 void CAN_transmit(void)
 {
