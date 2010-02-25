@@ -18,7 +18,7 @@
 #define NB_TARGET 1
 #define ID_TAG_BASE 128
 
-void display_sensor_values(void);
+void can(void);
 void req_sensor_data(U8 pakke, U8 node);
 
 DWORD acc_size;				/* Work register for fs command */
@@ -99,7 +99,6 @@ void IoInit ()
 
 int main (void)
 {
-	char *ptr, *ptr2;
 	DWORD p1, p2, p3;
 	BYTE res, b1;
 	WORD w1;
@@ -109,11 +108,6 @@ int main (void)
 	FATFS *fs;
 	DIR dir;				/* Directory object */
 	FIL file1, file2;			/* File object */
-	int i=0;
-    int x=1;
-    char d = 'A';
-    char e;
-    char data[] = "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
 
 	IoInit();
 
@@ -122,35 +116,19 @@ int main (void)
 	xfunc_out = (void (*)(char))uart_put;
     _delay_ms(2000);
 	xprintf(PSTR("System startet\n"));
-        xprintf(PSTR("Initialize disk 0\n"));    
-	    xprintf(PSTR("rc=%d\n"), (WORD)disk_initialize(0));
-        xprintf(PSTR("Initialize logical drice 0\n"));
-        xprintf(PSTR("rc=%d\n"), (WORD)f_mount(0, &Fatfs[0]));
-        xprintf(PSTR("Opening file hej\n"));
-        xprintf(PSTR("rc=%d\n"), (WORD)f_open(&file1, "hej",FA_WRITE)); 
-    display_sensor_values();
+    xprintf(PSTR("Initialize disk 0\n"));    
+	xprintf(PSTR("rc=%d\n"), (WORD)disk_initialize(0));
+    xprintf(PSTR("Initialize logical drice 0\n"));
+    xprintf(PSTR("rc=%d\n"), (WORD)f_mount(0, &Fatfs[0]));
+    xprintf(PSTR("Opening file hej\n"));
+    xprintf(PSTR("rc=%d\n"), (WORD)f_open(&file1, "hej",FA_WRITE)); 
 
     while(1) {
-        while ((UCSR0A & (1 << RXC0)) == 0) {};
-        d = UDR0;
-        if (d == 'c') {
-            xprintf(PSTR("\nCloseing file\n"));
-            xprintf(PSTR("rc=%d\n"), (WORD)f_close(&file1));
-        } else { 
-            uart_put(d);
-            while (x != 1000){
-                x++;
-                if ( f_write(&file1, data, 90, e) != 0 ) {
-                    xprintf(PSTR("Error\n"));
-                }
-            }  
-            uart_put(d);
-            x = 1;
-        }
+            can();
     }
 }
 
-void display_sensor_values(void)
+void can(void)
 {
     U8 i, j=0;
     U8 k = 0;
