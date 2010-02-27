@@ -39,6 +39,11 @@
 #define CAN_BAUDRATE   250        // in kBit
 //#define CAN_BAUDRATE   CAN_AUTOBAUD
 
+#define node1 0x80
+#define node2 0x81
+#define node3 0x82
+#define node4 0x83
+
     // -------------- UART
 #define BAUD0 38400 
 #define BAUD1 9600  // Xbee

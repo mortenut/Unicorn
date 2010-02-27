@@ -132,28 +132,28 @@ void can(void)
 {
     U8 i,j;
 
-    U8 response_buffer[3][9];
+    U8 response_buffer[3][8];
     st_cmd_t response_msg[3];
+    U8 databuffer[6][8];
+    U8 bufferindex = 0;
+    U8 buffersize = 8;
 
-    char num_buffer = 3;
+    char num_buffer = 1;
 
     // --- Init variables
+    
     for (i=0; i<num_buffer; i++) {
         response_msg[i].pt_data = &response_buffer[i][0];
         response_msg[i].status = 0;
     }
 
-    while (1)
-    {
-        // --- Init Rx Commands
-        for (j=0; j<num_buffer; j++) {
-            for(i=0; i<9; i++) {
-                response_buffer[j][i]=0; // Nulstiller buffer
-            }
+    for (j=0; j<num_buffer; j++) {
+        for(i=0; i<9; i++) {
+            response_buffer[j][i]=0; // Nulstiller buffer
         }
+    }
 
-        for (i=0; i<num_buffer; i++) {
-            if (can_get_status(&response_msg[i]) == CAN_STATUS_ERROR || response_msg[i].id.std != ID_TAG_BASE) {
+    for (i=0; i<num_buffer; i++) {
             response_msg[i].id.std = ID_TAG_BASE;
             response_msg[i].ctrl.ide = 0;
             response_msg[i].ctrl.rtr = 0;
@@ -161,39 +161,43 @@ void can(void)
             response_msg[i].cmd = CMD_RX_DATA_MASKED;
             // --- Rx Command
             while(can_cmd(&response_msg[i]) != CAN_CMD_ACCEPTED);
-          }
-        }
-
+    }
+    while (1)
+    {
         // Venter på der kommer data fra node
-        while (can_get_status(&response_msg[0]) != CAN_STATUS_COMPLETED);
-        while (can_get_status(&response_msg[1]) != CAN_STATUS_COMPLETED);
-            // --- Node ID
-	        xprintf(PSTR("Node: %d"),response_msg[0].id.std-127);
-            
-            // --- Data               
-            xprintf(PSTR(", Buf 0"));
-            xprintf(PSTR(", Data1: %03d"), response_buffer[0][0]);
-		    xprintf(PSTR(", Data2: %03d"), response_buffer[0][1]);
-		    xprintf(PSTR(", Data3: %03d"), response_buffer[0][2]);
-		    xprintf(PSTR(", Data4: %03d"), response_buffer[0][3]);
-		    xprintf(PSTR(", Data5: %03d"), response_buffer[0][4]);
-		    xprintf(PSTR(", Data6: %03d"), response_buffer[0][5]);
-		    xprintf(PSTR(", Data7: %03d"), response_buffer[0][6]);                
-		    xprintf(PSTR(", Data8: %03d"), response_buffer[0][7]);
-		    xprintf(PSTR("\r\n"));
-            
-	        xprintf(PSTR("Node: %d"),response_msg[0].id.std-127);
-            xprintf(PSTR(", Buf 1"));
-            xprintf(PSTR(", Data1: %03d"), response_buffer[1][0]);
-		    xprintf(PSTR(", Data2: %03d"), response_buffer[1][1]);
-		    xprintf(PSTR(", Data3: %03d"), response_buffer[1][2]);
-		    xprintf(PSTR(", Data4: %03d"), response_buffer[1][3]);
-		    xprintf(PSTR(", Data5: %03d"), response_buffer[1][4]);
-		    xprintf(PSTR(", Data6: %03d"), response_buffer[1][5]);
-		    xprintf(PSTR(", Data7: %03d"), response_buffer[1][6]);                
-		    xprintf(PSTR(", Data8: %03d"), response_buffer[1][7]);
-		    xprintf(PSTR("\r\n"));
-
+        if (can_get_status(&response_msg[0]) == CAN_STATUS_COMPLETED){
+            if (bufferindex >= buffersize){
+                xprintf(PSTR("Buffer full error\n"));
+            } else {
+                for (i=0; i<9; i++) {
+                        databuffer[bufferindex][i] = response_buffer[0][i];
+                        response_buffer[0][i] = 0;
+                }
+                bufferindex++;
+            }
+            response_msg[0].id.std = ID_TAG_BASE;
+            response_msg[0].ctrl.ide = 0;
+            response_msg[0].ctrl.rtr = 0;
+            response_msg[0].dlc = 8;
+            response_msg[0].cmd = CMD_RX_DATA_MASKED;
+            // --- Rx Command
+            while(can_cmd(&response_msg[0]) != CAN_CMD_ACCEPTED);
+        } 
+        if (bufferindex >= 4) {
+            for (i=0; i<bufferindex; i++) {         
+                xprintf(PSTR("Buf: %d"), i), 
+                xprintf(PSTR(", Data1: %03d"), databuffer[i][0]);
+		        xprintf(PSTR(", Data2: %03d"), databuffer[i][1]);
+		        xprintf(PSTR(", Data3: %03d"), databuffer[i][2]);
+    		    xprintf(PSTR(", Data4: %03d"), databuffer[i][3]);
+	    	    xprintf(PSTR(", Data5: %03d"), databuffer[i][4]);
+		        xprintf(PSTR(", Data6: %03d"), databuffer[i][5]);
+		        xprintf(PSTR(", Data7: %03d"), databuffer[i][6]);                
+    		    xprintf(PSTR(", Data8: %03d"), databuffer[i][7]);
+	    	    xprintf(PSTR("\r\n"));
+            }
+            bufferindex = 0;
+        }
     }
 }
 
