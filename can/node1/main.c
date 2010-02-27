@@ -14,6 +14,7 @@
 #include "diskio.h"
 #include "rtc.h"
 #include "can_lib.h"
+#include "can_func.h"
 
 #define NB_TARGET 1
 #define ID_TAG_BASE 128
@@ -28,8 +29,6 @@ FILINFO Finfo;
 char Lfname[_MAX_LFN+1];
 #endif
 
-
-BYTE Line[120];				/* Console input buffer */
 
 FATFS Fatfs[2];				/* File system object for each logical drive */
 BYTE Buff[1024];			/* Working buffer */
@@ -108,6 +107,7 @@ int main (void)
 	FATFS *fs;
 	DIR dir;				/* Directory object */
 	FIL file1, file2;			/* File object */
+    U8 i;
 
 	IoInit();
 
@@ -123,6 +123,12 @@ int main (void)
     xprintf(PSTR("Opening file hej\n"));
     xprintf(PSTR("rc=%d\n"), (WORD)f_open(&file1, "hej",FA_WRITE)); 
 
+    init_can_data_mobs();
+
+    for (i=0; i<num_of_response_mobs; i++) {
+            can_data_mob_setup(i);
+    }
+
     while(1) {
             can();
     }
@@ -132,93 +138,33 @@ void can(void)
 {
     U8 i,j;
 
-    U8 response_buffer[3][8];
-    st_cmd_t response_msg[3];
-    U8 databuffer[6][8];
-    U8 bufferindex = 0;
-    U8 buffersize = 8;
-
-    char num_buffer = 1;
-
-    // --- Init variables
-    
-    for (i=0; i<num_buffer; i++) {
-        response_msg[i].pt_data = &response_buffer[i][0];
-        response_msg[i].status = 0;
-    }
-
-    for (j=0; j<num_buffer; j++) {
-        for(i=0; i<9; i++) {
-            response_buffer[j][i]=0; // Nulstiller buffer
-        }
-    }
-
-    for (i=0; i<num_buffer; i++) {
-            response_msg[i].id.std = ID_TAG_BASE;
-            response_msg[i].ctrl.ide = 0;
-            response_msg[i].ctrl.rtr = 0;
-            response_msg[i].dlc = 8;
-            response_msg[i].cmd = CMD_RX_DATA_MASKED;
-            // --- Rx Command
-            while(can_cmd(&response_msg[i]) != CAN_CMD_ACCEPTED);
-    }
-    while (1)
-    {
-        // Venter på der kommer data fra node
-        if (can_get_status(&response_msg[0]) == CAN_STATUS_COMPLETED){
-            if (bufferindex >= buffersize){
+    for (j=0; j<num_of_response_mobs; j++){
+        if (can_get_status(&response_msg[j]) == CAN_STATUS_COMPLETED){
+            if (bufferindex >= data_buffer_num){
                 xprintf(PSTR("Buffer full error\n"));
             } else {
                 for (i=0; i<9; i++) {
-                        databuffer[bufferindex][i] = response_buffer[0][i];
-                        response_buffer[0][i] = 0;
+                        databuffer[bufferindex][i] = response_buffer[j][i];
+                        response_buffer[j][i] = 0;
                 }
                 bufferindex++;
             }
-            response_msg[0].id.std = ID_TAG_BASE;
-            response_msg[0].ctrl.ide = 0;
-            response_msg[0].ctrl.rtr = 0;
-            response_msg[0].dlc = 8;
-            response_msg[0].cmd = CMD_RX_DATA_MASKED;
-            // --- Rx Command
-            while(can_cmd(&response_msg[0]) != CAN_CMD_ACCEPTED);
-        } 
-        if (bufferindex >= 4) {
-            for (i=0; i<bufferindex; i++) {         
-                xprintf(PSTR("Buf: %d"), i), 
-                xprintf(PSTR(", Data1: %03d"), databuffer[i][0]);
-		        xprintf(PSTR(", Data2: %03d"), databuffer[i][1]);
-		        xprintf(PSTR(", Data3: %03d"), databuffer[i][2]);
-    		    xprintf(PSTR(", Data4: %03d"), databuffer[i][3]);
-	    	    xprintf(PSTR(", Data5: %03d"), databuffer[i][4]);
-		        xprintf(PSTR(", Data6: %03d"), databuffer[i][5]);
-		        xprintf(PSTR(", Data7: %03d"), databuffer[i][6]);                
-    		    xprintf(PSTR(", Data8: %03d"), databuffer[i][7]);
-	    	    xprintf(PSTR("\r\n"));
-            }
-            bufferindex = 0;
+            can_data_mob_setup(i);
         }
     }
-}
 
-void req_sensor_data(U8 pakke, U8 node)
-{
-	U8 tx_remote_buffer[9];
-   	st_cmd_t tx_remote_msg;
-
-	tx_remote_msg.pt_data = &tx_remote_buffer[0];
-	tx_remote_msg.status = 0;
-	
-	tx_remote_buffer[0]=pakke; // Nulstiller buffer
-
-    tx_remote_msg.id.std = ID_TAG_BASE+node;
-    tx_remote_msg.ctrl.ide = 0;
-    tx_remote_msg.ctrl.rtr = 1;
-    tx_remote_msg.dlc = 8; // Antal data bytes der skal modtages 
-    tx_remote_msg.cmd = CMD_TX_DATA;
-    // --- Tx Command
-    while(can_cmd(&tx_remote_msg) != CAN_CMD_ACCEPTED);
-
-	// --- Wait for Tx remote completed
-        while(can_get_status(&tx_remote_msg) == CAN_STATUS_NOT_COMPLETED);
+    for (i=0; i<bufferindex; i++) {         
+        xprintf(PSTR("Buf: %d"), i), 
+        xprintf(PSTR(", Data1: %03d"), databuffer[i][0]);
+	    xprintf(PSTR(", Data2: %03d"), databuffer[i][1]);
+        xprintf(PSTR(", Data3: %03d"), databuffer[i][2]);
+    	xprintf(PSTR(", Data4: %03d"), databuffer[i][3]);
+        xprintf(PSTR(", Data5: %03d"), databuffer[i][4]);
+        xprintf(PSTR(", Data6: %03d"), databuffer[i][5]);
+	    xprintf(PSTR(", Data7: %03d"), databuffer[i][6]);                
+    	xprintf(PSTR(", Data8: %03d"), databuffer[i][7]);
+	    xprintf(PSTR("\r\n"));
+    }
+    bufferindex = 0;
+    _delay_ms(1300);
 }
