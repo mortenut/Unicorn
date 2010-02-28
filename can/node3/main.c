@@ -28,6 +28,7 @@ st_cmd_t response_msg;
 
 int main (void)
 {	
+    int i=0;
     CLKPR = 0x80;  CLKPR = 0x00;  // Clock prescaler Reset
 
     // Init CAN, UART, I/O
@@ -46,8 +47,8 @@ int main (void)
         _delay_ms(500);
 
         // Sætter udgående sensordata
-        set_sensor_data(0);
-
+        set_sensor_data(i);
+        i = ++i & 127;
         // Transmittere sensordata
         CAN_transmit(); 
     }
@@ -104,16 +105,10 @@ void CAN_transmit(void)
 
 void set_sensor_data(unsigned short int dataType)
 {
-    unsigned short int i = 0;
+    int i;
 
     // --- Init Tx Commands
-    for(i=0; i<8; i++) 
-        tx_remote_buffer[i]=0;
-
-    if(dataType == 0)
-        tx_remote_buffer[0] = 112;
-    else if(dataType == 1)
-        tx_remote_buffer[0] = 155;
-    else if(dataType == 2)
-        tx_remote_buffer[0] = 44;
+    for (i=0; i<8; i++) {
+        tx_remote_buffer[i] = dataType+i;
+    }
 }
