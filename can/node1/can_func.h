@@ -1,5 +1,5 @@
-#define num_of_response_mobs 8
-#define data_buffer_num 8 
+#define num_of_response_mobs 6
+#define data_buffer_num 6 
 
 extern U8 response_buffer[num_of_response_mobs][8];
 extern st_cmd_t response_msg[num_of_response_mobs];

@@ -30,7 +30,7 @@ char Lfname[_MAX_LFN+1];
 #endif
 
 
-FATFS Fatfs[2];				/* File system object for each logical drive */
+FATFS Fatfs[1];				/* File system object for each logical drive */
 BYTE Buff[1024];			/* Working buffer */
 
 volatile WORD Timer;		/* 100Hz increment timer */
@@ -106,7 +106,7 @@ int main (void)
 	RTC rtc;
 	FATFS *fs;
 	DIR dir;				/* Directory object */
-	FIL file1, file2;			/* File object */
+	FIL file1;			/* File object */
     U8 i;
     U8 open = 0;
 
