@@ -19,7 +19,7 @@
 #define NB_TARGET 1
 #define ID_TAG_BASE 128
 
-void can(void);
+void can(FIL *file_to_log);
 void req_sensor_data(U8 pakke, U8 node);
 
 DWORD acc_size;				/* Work register for fs command */
@@ -108,6 +108,7 @@ int main (void)
 	DIR dir;				/* Directory object */
 	FIL file1, file2;			/* File object */
     U8 i;
+    U8 open = 0;
 
 	IoInit();
 
@@ -122,6 +123,7 @@ int main (void)
     xprintf(PSTR("rc=%d\n"), (WORD)f_mount(0, &Fatfs[0]));
     xprintf(PSTR("Opening file hej\n"));
     xprintf(PSTR("rc=%d\n"), (WORD)f_open(&file1, "hej",FA_WRITE)); 
+    open = 1;
 
     init_can_data_mobs();
 
@@ -130,13 +132,24 @@ int main (void)
     }
 
     while(1) {
-            can();
+        if ((UCSR0A & _BV(RXC0))) {
+                if (UDR0 == 'c') {
+                        if (f_close(&file1) != 0) {
+                            xprintf(PSTR("Error on file closing\r\n"));
+                        }
+                        open = 0;
+                }
+        }
+        if (open == 1) {
+            can(&file1);
+        }
     }
 }
 
-void can(void)
+void can(FIL *file)
 {
     U8 i,j;
+    char e;
 
     for (j=0; j<num_of_response_mobs; j++){
         if (can_get_status(&response_msg[j]) == CAN_STATUS_COMPLETED){
@@ -165,7 +178,8 @@ void can(void)
     	xprintf(PSTR(", Data8: %03d"), databuffer[i][7]);
 	    xprintf(PSTR("\r\n"));
     }
+    if (f_write(file, databuffer, 9*bufferindex, e) != 0)
+            xprintf(PSTR("Write error\r\n"));
     bufferindex = 0;
-    
 }
 
