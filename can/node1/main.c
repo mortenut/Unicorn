@@ -166,5 +166,6 @@ void can(void)
 	    xprintf(PSTR("\r\n"));
     }
     bufferindex = 0;
-    _delay_ms(1300);
+    
 }
+
