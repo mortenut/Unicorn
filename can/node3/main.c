@@ -43,8 +43,8 @@ int main (void)
 
     while (1)
     {
-        // sender hvert sekund
-        _delay_ms(500);
+        // sender delay
+        _delay_ms(1);
 
         // Sætter udgående sensordata
         set_sensor_data(i);

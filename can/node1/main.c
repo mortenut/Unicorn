@@ -167,8 +167,8 @@ void can(FIL *file)
     }
 
     for (i=0; i<bufferindex; i++) {         
-        xprintf(PSTR("Buf: %d"), i), 
-        xprintf(PSTR(", Data1: %03d"), databuffer[i][0]);
+        xprintf(PSTR("B %d"), i); 
+        /*xprintf(PSTR(", Data1: %03d"), databuffer[i][0]);
 	    xprintf(PSTR(", Data2: %03d"), databuffer[i][1]);
         xprintf(PSTR(", Data3: %03d"), databuffer[i][2]);
     	xprintf(PSTR(", Data4: %03d"), databuffer[i][3]);
@@ -176,7 +176,7 @@ void can(FIL *file)
         xprintf(PSTR(", Data6: %03d"), databuffer[i][5]);
 	    xprintf(PSTR(", Data7: %03d"), databuffer[i][6]);                
     	xprintf(PSTR(", Data8: %03d"), databuffer[i][7]);
-	    xprintf(PSTR("\r\n"));
+	    xprintf(PSTR("\r\n"));*/
     }
     if (f_write(file, databuffer, 9*bufferindex, e) != 0)
             xprintf(PSTR("Write error\r\n"));
