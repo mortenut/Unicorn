@@ -124,7 +124,7 @@ int main (void)
     xprintf(PSTR("Opening file hej\n"));
     xprintf(PSTR("rc=%d\n"), (WORD)f_open(&file1, "hej",FA_WRITE)); 
     open = 1;
-
+    _delay_ms(2000);
     init_can_data_mobs();
 
     for (i=0; i<num_of_response_mobs; i++) {
@@ -180,6 +180,7 @@ void can(FIL *file)
     }
     if (f_write(file, databuffer, 9*bufferindex, e) != 0)
             xprintf(PSTR("Write error\r\n"));
+    _delay_us(1700);
     bufferindex = 0;
 }
 

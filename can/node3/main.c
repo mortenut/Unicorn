@@ -44,7 +44,7 @@ int main (void)
     while (1)
     {
         // sender delay
-        _delay_ms(1);
+        _delay_us(500);
 
         // Sætter udgående sensordata
         set_sensor_data(i);
