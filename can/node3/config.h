@@ -33,8 +33,8 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
     // -------------- MCU LIB CONFIGURATION
-#define FOSC           8000        // 8 MHz External cristal
-#define F_CPU          8000000     // Need for AVR GCC
+#define FOSC           110592        // 8 MHz External cristal
+#define F_CPU          (FOSC*100)     // Need for AVR GCC
 
     // -------------- CAN LIB CONFIGURATION
 #define CAN_BAUDRATE   250        // in kBit

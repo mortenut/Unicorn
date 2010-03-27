@@ -44,7 +44,7 @@ int main (void)
     while (1)
     {
         // sender delay
-        _delay_us(500);
+        _delay_ms(10);
 
         // Sætter udgående sensordata
         set_sensor_data(i);
@@ -62,7 +62,7 @@ void init(void)
     can_init(0);
 
     // UART Init
-    uart_init(CONF_8BIT_NOPAR_1STOP,UART_BAUDRATE);
+//    uart_init(CONF_8BIT_NOPAR_1STOP,UART_BAUDRATE);
 
     // IO Init
     DDRA = 0xFF;

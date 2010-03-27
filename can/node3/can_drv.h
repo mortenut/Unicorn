@@ -70,7 +70,7 @@
 #       error This CAN_BAUDRATE value is not in "can_drv.h" file
 #   endif
 
-#elif FOSC == 12000           //!< Fclkio = 12 MHz, Tclkio = 83.333 ns
+#elif FOSC == 110592           //!< Fclkio = 12 MHz, Tclkio = 83.333 ns
 #   if   CAN_BAUDRATE == 100       //!< -- 100Kb/s, 20x Tscl, sampling at 75%
 #       define CONF_CANBT1  0x0A       // Tscl  = 6x Tclkio = 500 ns
 #       define CONF_CANBT2  0x0E       // Tsync = 1x Tscl, Tprs = 8x Tscl, Tsjw = 1x Tscl
@@ -83,10 +83,11 @@
 #       define CONF_CANBT1  0x04       // Tscl  = 3x Tclkio = 250 ns
 #       define CONF_CANBT2  0x0E       // Tsync = 1x Tscl, Tprs = 8x Tscl, Tsjw = 1x Tscl
 #       define CONF_CANBT3  0x4B       // Tpsh1 = 6x Tscl, Tpsh2 = 5x Tscl, 3 sample points
+// Timing lavet om til at pass med 11059200 Hz!!!
 #   elif CAN_BAUDRATE == 250       //!< -- 250Kb/s, 16x Tscl, sampling at 75%
-#       define CONF_CANBT1  0x04       // Tscl  = 3x Tclkio = 250 ns
-#       define CONF_CANBT2  0x0C       // Tsync = 1x Tscl, Tprs = 7x Tscl, Tsjw = 1x Tscl
-#       define CONF_CANBT3  0x37       // Tpsh1 = 4x Tscl, Tpsh2 = 4x Tscl, 3 sample points
+#       define CONF_CANBT1  0x06       // Tscl  = 3x Tclkio = 250 ns
+#       define CONF_CANBT2  0x06       // Tsync = 1x Tscl, Tprs = 7x Tscl, Tsjw = 1x Tscl
+#       define CONF_CANBT3  0x24       // Tpsh1 = 4x Tscl, Tpsh2 = 4x Tscl, 3 sample points
 #   elif CAN_BAUDRATE == 500       //!< -- 500Kb/s, 12x Tscl, sampling at 75%
 #       define CONF_CANBT1  0x02       // Tscl  = 2x Tclkio = 166.666 ns
 #       define CONF_CANBT2  0x08       // Tsync = 1x Tscl, Tprs = 5x Tscl, Tsjw = 1x Tscl
