@@ -130,6 +130,27 @@ int main (void)
     for (i=0; i<num_of_response_mobs; i++) {
             can_data_mob_setup(i);
     }
+    tx_remote_msg.pt_data = &tx_remote_buffer[0];
+    tx_remote_msg.status = 0;
+
+    while (1) {
+           while (!(UCSR0A & 1<<RXC0));
+           i = UDR0;
+           switch (i) {
+                case 'a':
+                    can_send(150, 0);
+                    break;
+                case 'd':
+                    can_send(150, 1);
+                    break;
+                case 'w':
+                    can_send(150, 2);
+                    break;
+                case 's':
+                    can_send(150, 3);
+                    break;
+           }
+    }
 
     while(1) {
         if ((UCSR0A & _BV(RXC0))) {

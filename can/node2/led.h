@@ -10,37 +10,37 @@ volatile extern char LED_REG2;
 
 /* rpm leds */
 
-#define LED1_ON LED_REG2 |= 0x1
-#define LED1_OFF LED_REG2 &= 0xE
-#define LED1_TOGGLE LED_REG2 ^= 0x1
+#define LED1_ON LED_REG1 |= 0x1
+#define LED1_OFF LED_REG1 &= 0xE
+#define LED1_TOGGLE LED_REG1 ^= 0x1
 
-#define LED2_ON LED_REG2 |= 0x2
-#define LED2_OFF LED_REG2 &= 0xD
-#define LED2_TOGGLE LED_REG2 ^= 0x2
+#define LED2_ON LED_REG1 |= 0x2
+#define LED2_OFF LED_REG1 &= 0xD
+#define LED2_TOGGLE LED_REG1 ^= 0x2
 
-#define LED3_ON LED_REG2 |= 0x4
-#define LED3_OFF LED_REG2 &= 0xB
-#define LED3_TOGGLE LED_REG2 ^= 0x4
+#define LED3_ON LED_REG1 |= 0x4
+#define LED3_OFF LED_REG1 &= 0xB
+#define LED3_TOGGLE LED_REG1 ^= 0x4
 
-#define LED4_ON LED_REG2 |= 0x8
-#define LED4_OFF LED_REG2 &= 0x7
-#define LED4_TOGGLE LED_REG2 ^= 0x8
+#define LED4_ON LED_REG1 |= 0x8
+#define LED4_OFF LED_REG1 &= 0x7
+#define LED4_TOGGLE LED_REG1 ^= 0x8
 
-#define LED5_ON LED_REG2 |= 0x10
-#define LED5_OFF LED_REG2 &= 0xEF
-#define LED5_TOGGLE LED_REG2 ^= 0x10
+#define LED5_ON LED_REG1 |= 0x10
+#define LED5_OFF LED_REG1 &= 0xEF
+#define LED5_TOGGLE LED_REG1 ^= 0x10
 
-#define LED6_ON LED_REG2 |= 0x20
-#define LED6_OFF LED_REG2 &= 0xDF
-#define LED6_TOGGLE LED_REG2 ^= 0x20
+#define LED6_ON LED_REG1 |= 0x20
+#define LED6_OFF LED_REG1 &= 0xDF
+#define LED6_TOGGLE LED_REG1 ^= 0x20
 
-#define LED7_ON LED_REG2 |= 0x40
-#define LED7_OFF LED_REG2 &= 0xBF
-#define LED7_TOGGLE LED_REG2 ^= 0x40
+#define LED7_ON LED_REG1 |= 0x40
+#define LED7_OFF LED_REG1 &= 0xBF
+#define LED7_TOGGLE LED_REG1 ^= 0x40
 
-#define LED8_ON LED_REG2 |= 0x80
-#define LED8_OFF LED_REG2 &= 0x7F
-#define LED8_TOGGLE LED_REG2 ^= 0x80
+#define LED8_ON LED_REG1 |= 0x80
+#define LED8_OFF LED_REG1 &= 0x7F
+#define LED8_TOGGLE LED_REG1 ^= 0x80
 
 #define LED9_ON LED_REG2 |= 0x1
 #define LED9_OFF LED_REG2 &= 0xE

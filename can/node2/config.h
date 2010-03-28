@@ -32,7 +32,7 @@
 //_____ D E F I N I T I O N S __________________________________________________
 
     // -------------- MCU LIB CONFIGURATION
-#define FOSC           110592        // 8 MHz External cristal
+#define FOSC           110592        // 11,0592 MHz External cristal
 #define F_CPU          (FOSC*100) // Need for AVR GCC
 
     // -------------- CAN LIB CONFIGURATION
@@ -44,12 +44,6 @@
 #define node3 0x82
 #define node4 0x83
 
-    // -------------- UART
-#define BAUD0 38400 
-#define BAUD1 9600  // Xbee
-
 //_____ D E C L A R A T I O N S ________________________________________________
 
 #endif  // _CONFIG_H_
-
-

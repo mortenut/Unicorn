@@ -28,7 +28,9 @@ st_cmd_t response_msg;
 
 int main (void)
 {	
-    int i=0;
+    U8 i=0;
+    int j=0;
+    int k=12;
     CLKPR = 0x80;  CLKPR = 0x00;  // Clock prescaler Reset
 
  //    Init CAN, UART, I/O
@@ -57,12 +59,47 @@ int main (void)
 
     response_msg.pt_data = &response_buffer[0];
     response_msg.status = 0;
-
+    
     while (1)
     {
+            i = wait_CAN_request();
+            if (i == 0) {
+                if (j>0) {
+                        j--;
+                        if (j<8)
+                            LED_REG1 &= 255 - (1<<j);
+                        else
+                            LED_REG2 &= 255 - (1<<(j-8));
+                }
+            }
+            else if (i == 1) {
+                if (j<16) {
+                        if (j<8)
+                            LED_REG1 |= (1<<j);
+                        else
+                            LED_REG2 |= (1<<(j-8));
+                        j++;
+                }
+            }
+            else if (i == 2) {
+                if (k<=11) {
+                        k++;
+                        OCR0A = k*20;
+                }
+            }
+            else if (i == 3) {
+                if (k>1) {
+                        k--;
+                        OCR0A = k*20;
+                }
+                if (k==1) 
+                        OCR0A = 2;
+            }
+            //LED5_TOGGLE;                    
+            
         // Venter på datakald
 //        dataType = wait_CAN_request();
-    LED_REG1 = 0xFF;
+/*    LED_REG1 = 0xFF;
     LED_REG2 = 0xFF;
     for (i=0;i<256;i++) {
         OCR0A = i;
@@ -112,7 +149,7 @@ int main (void)
 //        set_sensor_data(dataType);
 
         // Transmittere sensordata
-//        CAN_transmit(); 
+//        CAN_transmit(); */
     }
 
     return 0;
@@ -134,18 +171,17 @@ unsigned short int wait_CAN_request(void)
     for(i=0; i<8; i++)  // Nulstiller buffer
         response_buffer[i]=0;
 
-    response_msg.id.std = ID_BASE + NODE;
+    response_msg.id.std = 150;
     response_msg.ctrl.ide = 0;
-    response_msg.dlc = 1;               //Antal bytes der skal modtages
+    response_msg.ctrl.rtr = 0;
+    response_msg.dlc = 8;               //Antal bytes der skal modtages
     response_msg.cmd = CMD_RX_DATA_MASKED;
-   
     // --- Rx Command
     while(can_cmd(&response_msg) != CAN_CMD_ACCEPTED);
-
     // Venter på data er modtaget
     while(can_get_status(&response_msg) == CAN_STATUS_NOT_COMPLETED);
-
-return response_buffer[0];}
+return response_buffer[0];
+}
 
 void CAN_transmit(void)
 {
