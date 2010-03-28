@@ -39,6 +39,10 @@
 #define CAN_BAUDRATE   250        // in kBit
 //#define CAN_BAUDRATE   CAN_AUTOBAUD
 
+    // -------------- LED
+/* on in RPM_LED_POWER/255 % of the time */
+#define RPM_LED_POWER 255
+
 #define node1 0x80
 #define node2 0x81
 #define node3 0x82
