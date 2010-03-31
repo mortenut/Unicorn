@@ -16,3 +16,8 @@ ISR(TIMER0_COMP_vect)
         PORTE = 0;
         PORTB = 0;
 }
+
+ISR(CANIT)
+{
+
+}
