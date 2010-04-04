@@ -52,7 +52,12 @@ U8 can_init(U8 mode)
 {
     if ((Can_bit_timing(mode))==0) return (0);  // c.f. macro in "can_drv.h"
     can_clear_all_mob();                        // c.f. function in "can_drv.c"
-    Can_enable();                               // c.f. macro in "can_drv.h" 
+    Can_enable();                               // c.f. macro in "can_drv.h"
+/*    CANGIE |= 1 << ENRX;                         // enable can receive interrupt
+    CANIE2 = 0xFF;                              // enable interrupt from mob 0-7
+    CANIE1 = 0xEF;                              // enable interrupt from mob 8-14
+    CANGIE |= 1 << ENIT;                        // enable interrupt from can
+*/
     return (1);
 }
 
@@ -306,17 +311,3 @@ U8 can_get_status (st_cmd_t* cmd)
     return (rtn_val);
 }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
