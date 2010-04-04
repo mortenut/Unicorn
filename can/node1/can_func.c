@@ -43,7 +43,7 @@ void can_send(U8 msg_id, U8 msg, U8 dlc)
     tx_remote_msg.id.std = msg_id;
     tx_remote_msg.ctrl.ide = 0;
     tx_remote_msg.ctrl.rtr = 1;
-    tx_remote_msg.dlc = 8;
+    tx_remote_msg.dlc = dlc;
     tx_remote_msg.cmd = CMD_TX_DATA;
 
     while (can_cmd(&tx_remote_msg) != CAN_CMD_ACCEPTED);

@@ -139,46 +139,46 @@ int main (void)
            i = UDR0;
            switch (i) {
                 case 'a':
-                    can_send(rpm_msgid, 0);
+                    can_send(rpm_msgid, 0, 1);
                     break;
                 case 'd':
-                    can_send(rpm_msgid, 1);
+                    can_send(rpm_msgid, 1, 1);
                     break;
                 case 'w':
-                    can_send(rpm_msgid, 2);
+                    can_send(rpm_msgid, 2, 1);
                     break;
                 case 's':
-                    can_send(rpm_msgid, 3);
+                    can_send(rpm_msgid, 3, 1);
                     break;
                 case '0':
-                    can_send(gear_status_msgid, 0);
+                    can_send(gear_status_msgid, 0, 1);
                     break;
                 case '1':
-                    can_send(gear_status_msgid, 1);
+                    can_send(gear_status_msgid, 1, 1);
                     break;
                 case '2':
-                    can_send(gear_status_msgid, 2);
+                    can_send(gear_status_msgid, 2, 1);
                     break;
                 case '3':
-                    can_send(gear_status_msgid, 3);
+                    can_send(gear_status_msgid, 3, 1);
                     break;
                 case '4':
-                    can_send(gear_status_msgid, 4);
+                    can_send(gear_status_msgid, 4, 1);
                     break;
                 case '5':
-                    can_send(gear_status_msgid, 5);
+                    can_send(gear_status_msgid, 5, 1);
                     break;
                 case '6':
-                    can_send(gear_status_msgid, 6);
+                    can_send(gear_status_msgid, 6, 1);
                     break;
                 case '7':
-                    can_send(gear_status_msgid, 7);
+                    can_send(gear_status_msgid, 7, 1);
                     break;
                 case '8':
-                    can_send(gear_status_msgid, 8);
+                    can_send(gear_status_msgid, 8, 1);
                     break;
                 case '9':
-                    can_send(gear_status_msgid, 9);
+                    can_send(gear_status_msgid, 9, 1);
                     break;
            }
     }
