@@ -40,7 +40,7 @@ int main (void)
     gear_status_msg.pt_data = &gear_status_response_buffer[0];
     gear_status_msg.status = 0;
 
-    fade_in(2000, 50);
+    fade_in(5000, 50);
     SEG_0;
     
     can_update_rx_msg(&rpm_msg, rpm_msgid, 8);
