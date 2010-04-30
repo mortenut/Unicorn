@@ -40,7 +40,7 @@ int main (void)
     gear_status_msg.pt_data = &gear_status_response_buffer[0];
     gear_status_msg.status = 0;
 
-    fade_in(5000, 50);
+    fade_in(1000, 50);
     SEG_0;
     
     can_update_rx_msg(&rpm_msg, rpm_msgid, 8);
@@ -50,7 +50,15 @@ int main (void)
             if (can_get_status(&rpm_msg) == CAN_STATUS_COMPLETED) {  // check for rpm_msg
                     i = rpm_response_buffer[0];                     
                     can_update_rx_msg(&rpm_msg, rpm_msgid, 8);      // update rpm_msg to accept a new msg
-                    if (i == 0) {
+                    if (i <= 7) {
+                        LED_REG1 = (1<<i)-1;
+                        LED_REG2 = 0;
+                    }
+                    if (i>=8) {
+                        LED_REG1 = 255;
+                        LED_REG2 = (1<<(i-8))-1;
+                    }
+ /*                   if (i == 0) {
                             if (j>0) {
                                     j--;
                                     if (j<8)
@@ -81,7 +89,7 @@ int main (void)
                             }
                             if (k==1) 
                                     OCR0A = 2;
-                    }
+                    }*/
             }
             if (can_get_status(&gear_status_msg) == CAN_STATUS_COMPLETED) {  // check for gear_status_msg
                     i = gear_status_response_buffer[0];                     

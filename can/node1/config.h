@@ -45,7 +45,7 @@
 #define node4 0x83
 
     // -------------- UART
-#define BAUD0 38400 
+#define BAUD0 19200 
 #define BAUD1 9600  // Xbee
 
 //_____ D E C L A R A T I O N S ________________________________________________

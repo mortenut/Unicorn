@@ -64,7 +64,7 @@ uint8_t uart_get ()
 void uart_put(uint8_t d)
 {
    
-   USART0_Transmit( d );
+   USART1_Transmit( d );
 }
 
 /* Transmit a string */

@@ -108,12 +108,16 @@ int main (void)
 	FATFS *fs;
 	DIR dir;				/* Directory object */
 	FIL file1;			/* File object */
-    U8 i;
+    U8 i,j;
     U8 open = 0;
+    
+    int tmp=0;
+    int tmp2=0;
+
+    char ecu_data[10] = {0x12,0x34,0x56,0x78,0x17,0x08,0,0,0,0}; 
 
 	IoInit();
 
-    	uart_put(84);
 	/* Join xitoa module to uart module */
 	xfunc_out = (void (*)(char))uart_put;
     _delay_ms(2000);
@@ -134,6 +138,34 @@ int main (void)
     tx_remote_msg.pt_data = &tx_remote_buffer[0];
     tx_remote_msg.status = 0;
 
+    j = 0;
+    i = 0;
+    tmp = 0;
+
+    can_send(rpm_msgid, 8, 1);
+    while(1) {
+            tmp = 0;
+            tmp2 = 0;
+            for (i=0;i<=9;i++) {
+                USART0_Transmit(ecu_data[i]); 
+            }
+            for (i=0;i<114;i++) {
+                while (!(UCSR0A & 1<<RXC0));
+                tmp = UDR0;
+                if (i == 54) {
+                    tmp2 = tmp<<8;
+                }else if(i == 55) {
+                    tmp2 += tmp;
+                }
+            }
+            tmp = (int)(tmp2*0.9408)/650;
+	        xprintf(PSTR("Rpm=%d Led=%d\n"), tmp2, tmp);
+            can_send(rpm_msgid, tmp , 1);
+            _delay_ms(50);
+    }
+
+
+/*
     while (1) {
            while (!(UCSR0A & 1<<RXC0));
            i = UDR0;
@@ -182,7 +214,7 @@ int main (void)
                     break;
            }
     }
-
+*/
     while(1) {
         if ((UCSR0A & _BV(RXC0))) {
                 if (UDR0 == 'c') {
